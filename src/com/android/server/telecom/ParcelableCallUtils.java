@@ -161,6 +161,7 @@ public class ParcelableCallUtils {
                 properties,
                 supportedAudioRoutes,
                 connectTimeMillis,
+                call.getCreationTimeMillis(),
                 handle,
                 call.getHandlePresentation(),
                 callerDisplayName,
