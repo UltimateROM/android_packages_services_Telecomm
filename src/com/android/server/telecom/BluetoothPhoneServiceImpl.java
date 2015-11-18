@@ -965,6 +965,7 @@ public final class BluetoothPhoneServiceImpl {
                 }
             }
 
+
             if (mBluetoothHeadset != null &&
                     (numActiveCalls != mNumActiveCalls ||
                     numHeldCalls != mNumHeldCalls ||
