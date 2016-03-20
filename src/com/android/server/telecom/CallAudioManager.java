@@ -575,6 +575,7 @@ final class CallAudioManager extends CallsManagerListenerBase
                 // DISCONNECTED. When the call eventually transitions to the next state, audio
                 // focus will be correctly abandoned by the if clause above.
             }
+            resetAudioStreamVolume();
         }
 
         boolean isVoiceCall = mAudioFocusStreamType == AudioManager.STREAM_VOICE_CALL;
@@ -700,6 +701,7 @@ final class CallAudioManager extends CallsManagerListenerBase
         Call call = mCallsManager.getForegroundCall();
         if (call != null && call.getConnectionService() != null) {
             call.getConnectionService().onCallAudioStateChanged(call, mCallAudioState);
+            resetAudioStreamVolume();
         }
     }
 
@@ -798,6 +800,27 @@ final class CallAudioManager extends CallsManagerListenerBase
             default:
                 return "MODE_OTHER_" + mode;
         }
+    }
+
+        /* Fix low in call volume */
+    public void resetAudioStreamVolume() {
+        // determine actual streamType
+        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        int streamType = AudioManager.STREAM_VOICE_CALL;
+        if (mBluetoothManager.isBluetoothAudioConnectedOrPending()) {
+            streamType = AudioManager.STREAM_BLUETOOTH_SCO;
+        }
+        // determine volume and 1 level lower volume (lowest level can be 0)
+        int volume = audioManager.getStreamVolume(streamType);
+        int lowerVolume = volume - 1;
+        if (lowerVolume < 0) {
+            lowerVolume = 0;
+        }
+        Log.i(this,"resetAudioStreamVolume (streamType=" + streamType + ", streamVolume=" + volume + ")...");
+        // It's important to change it to another volume before restoring the original volume,
+        // otherwise the volume change will NOT be triggered!!
+        audioManager.setStreamVolume(streamType, lowerVolume, 0);
+        audioManager.setStreamVolume(streamType, volume, 0);
     }
 
     /**
