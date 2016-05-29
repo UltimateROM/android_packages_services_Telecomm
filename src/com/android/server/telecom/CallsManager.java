@@ -1220,9 +1220,7 @@ public class CallsManager extends Call.ListenerBase implements VideoProviderProx
     void markCallAsDisconnected(Call call, DisconnectCause disconnectCause) {
         // Show MT call in call log as a missed call if immediately disconnected
         // before creating a connection.
-        if (!mCalls.contains(call) && DisconnectCause.MISSED == disconnectCause.getCode() &&
-                call.getDisconnectCause().getCode() !=
-                        android.telephony.DisconnectCause.CALL_BLACKLISTED) {
+        if (!mCalls.contains(call) && (DisconnectCause.MISSED == disconnectCause.getCode())) {
             addCall(call);
             mMissedCallNotifier.showMissedCallNotification(call);
         }
