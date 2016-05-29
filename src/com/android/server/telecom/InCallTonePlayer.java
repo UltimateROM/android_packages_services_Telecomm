@@ -198,12 +198,6 @@ public final class InCallTonePlayer extends Thread {
                 case TONE_VOICE_PRIVACY:
                     // TODO: fill in.
                     throw new IllegalStateException("Voice privacy tone NYI.");
-                case TONE_VIDEO_UPGRADE:
-                    // Similar to the call waiting tone, but does not repeat.
-                    toneType = ToneGenerator.TONE_SUP_CALL_WAITING;
-                    toneVolume = RELATIVE_VOLUME_HIPRI;
-                    toneLengthMillis = 4000;
-                    break;
                 default:
                     throw new IllegalStateException("Bad toneId: " + mToneId);
             }

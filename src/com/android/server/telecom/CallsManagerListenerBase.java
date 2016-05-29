@@ -18,7 +18,6 @@ package com.android.server.telecom;
 
 import android.telecom.AudioState;
 import android.telecom.CallAudioState;
-import android.telecom.VideoProfile;
 
 /**
  * Provides a default implementation for listeners of CallsManager.
@@ -78,11 +77,6 @@ public class CallsManagerListenerBase implements CallsManager.CallsManagerListen
 
     @Override
     public void onCanAddCallChanged(boolean canAddCall) {
-    }
-
-    @Override
-    public void onSessionModifyRequestReceived(Call call, VideoProfile videoProfile) {
-
     }
 
     @Override

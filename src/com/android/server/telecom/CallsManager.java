@@ -65,7 +65,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * beyond the com.android.server.telecom package boundary.
  */
 @VisibleForTesting
-public class CallsManager extends Call.ListenerBase implements VideoProviderProxy.Listener {
+public class CallsManager extends Call.ListenerBase {
 
     // TODO: Consider renaming this CallsManagerPlugin.
     interface CallsManagerListener {
@@ -85,7 +85,6 @@ public class CallsManager extends Call.ListenerBase implements VideoProviderProx
         void onIsVoipAudioModeChanged(Call call);
         void onVideoStateChanged(Call call);
         void onCanAddCallChanged(boolean canAddCall);
-        void onSessionModifyRequestReceived(Call call, VideoProfile videoProfile);
         void onMergeFailed(Call call);
         void onProcessIncomingCall(Call call);
     }
@@ -433,45 +432,6 @@ public class CallsManager extends Call.ListenerBase implements VideoProviderProx
         }, Timeouts.getNewOutgoingCallCancelMillis(mContext.getContentResolver()));
 
         return true;
-    }
-
-    /**
-     * Handles changes to the {@link Connection.VideoProvider} for a call.  Adds the
-     * {@link CallsManager} as a listener for the {@link VideoProviderProxy} which is created
-     * in {@link Call#setVideoProvider(IVideoProvider)}.  This allows the {@link CallsManager} to
-     * respond to callbacks from the {@link VideoProviderProxy}.
-     *
-     * @param call The call.
-     */
-    @Override
-    public void onVideoCallProviderChanged(Call call) {
-        VideoProviderProxy videoProviderProxy = call.getVideoProviderProxy();
-
-        if (videoProviderProxy == null) {
-            return;
-        }
-
-        videoProviderProxy.addListener(this);
-    }
-
-    /**
-     * Handles session modification requests received via the {@link TelecomVideoCallCallback} for
-     * a call.  Notifies listeners of the {@link CallsManager.CallsManagerListener} of the session
-     * modification request.
-     *
-     * @param call The call.
-     * @param videoProfile The {@link VideoProfile}.
-     */
-    @Override
-    public void onSessionModifyRequestReceived(Call call, VideoProfile videoProfile) {
-        int videoState = videoProfile != null ? videoProfile.getVideoState() :
-                VideoProfile.STATE_AUDIO_ONLY;
-        Log.v(TAG, "onSessionModifyRequestReceived : videoProfile = " + VideoProfile
-                .videoStateToString(videoState));
-
-        for (CallsManagerListener listener : mListeners) {
-            listener.onSessionModifyRequestReceived(call, videoProfile);
-        }
     }
 
     Collection<Call> getCalls() {
