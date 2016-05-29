@@ -183,18 +183,6 @@ public final class InCallTonePlayer extends Thread {
                     toneVolume = RELATIVE_VOLUME_HIPRI;
                     toneLengthMillis = 4000;
                     break;
-                case TONE_HOLD_RECALL:
-                    toneType = ToneGenerator.TONE_HOLD_RECALL;
-                    toneVolume = RELATIVE_VOLUME_HIPRI;
-                    // Call hold recall tone is stopped by stopTone() method
-                    toneLengthMillis = Integer.MAX_VALUE - TIMEOUT_BUFFER_MILLIS;
-                    break;
-                case TONE_SUPERVISORY_CH:
-                    toneType = ToneGenerator.TONE_SUPERVISORY_CH;
-                    toneVolume = RELATIVE_VOLUME_HIPRI;
-                    // Supervisory call held tone is stopped by stopTone() method
-                    toneLengthMillis = Integer.MAX_VALUE - TIMEOUT_BUFFER_MILLIS;
-                    break;
                 case TONE_VOICE_PRIVACY:
                     // TODO: fill in.
                     throw new IllegalStateException("Voice privacy tone NYI.");
