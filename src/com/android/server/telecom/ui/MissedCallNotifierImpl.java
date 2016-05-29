@@ -52,7 +52,6 @@ import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.provider.Settings;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.UserHandle;
@@ -108,10 +107,6 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
     private static final int CALL_LOG_COLUMN_TYPE = 5;
 
     private static final int MISSED_CALL_NOTIFICATION_ID = 1;
-
-    // notification light default constants
-    public static final int DEFAULT_COLOR = 0xFFFFFF; //White
-    public static final int DEFAULT_TIME = 1000; // 1 second
 
     private final Context mContext;
     private final NotificationManager mNotificationManager;
@@ -395,7 +390,7 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
         }
 
         Notification notification = builder.build();
-        configureLedNotification(mContext, notification);
+        configureLedOnNotification(notification);
 
         // Allow providers to update notification before displaying it,
         // for things like badging...etc
@@ -560,33 +555,11 @@ public class MissedCallNotifierImpl extends CallsManagerListenerBase implements 
     }
 
     /**
-     * Configures a Notification to emit the blinky message-waiting/
-     * missed-call signal.
+     * Configures a notification to emit the blinky notification light.
      */
-    private static void configureLedNotification(Context context, Notification notification) {
-        ContentResolver resolver = context.getContentResolver();
-
-        boolean lightEnabled = Settings.System.getInt(resolver,
-                Settings.System.NOTIFICATION_LIGHT_PULSE, 0) == 1;
-        if (!lightEnabled) {
-            return;
-        }
+    private void configureLedOnNotification(Notification notification) {
         notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-
-        // Get Missed call and Voice mail values if they are to be used
-        boolean customEnabled = Settings.System.getInt(resolver,
-                Settings.System.NOTIFICATION_LIGHT_PULSE_CUSTOM_ENABLE, 0) == 1;
-        if (!customEnabled) {
-            notification.defaults |= Notification.DEFAULT_LIGHTS;
-            return;
-        }
-
-        notification.ledARGB = Settings.System.getInt(resolver,
-            Settings.System.NOTIFICATION_LIGHT_PULSE_CALL_COLOR, DEFAULT_COLOR);
-        notification.ledOnMS = Settings.System.getInt(resolver,
-            Settings.System.NOTIFICATION_LIGHT_PULSE_CALL_LED_ON, DEFAULT_TIME);
-        notification.ledOffMS = Settings.System.getInt(resolver,
-            Settings.System.NOTIFICATION_LIGHT_PULSE_CALL_LED_OFF, DEFAULT_TIME);
+        notification.defaults |= Notification.DEFAULT_LIGHTS;
     }
 
     private boolean canRespondViaSms(MissedCallInfo call) {
