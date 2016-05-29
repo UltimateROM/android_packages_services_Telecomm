@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.provider.CallLog.Calls;
 import android.telecom.DisconnectCause;
 import android.telecom.PhoneAccountHandle;
@@ -54,7 +53,7 @@ final class CallLogManager extends CallsManagerListenerBase {
          */
         public AddCallArgs(Context context, CallerInfo callerInfo, String number,
                 int presentation, int callType, int features, PhoneAccountHandle accountHandle,
-                long creationDate, long durationInMillis, Long dataUsage, Bundle callExtras) {
+                long creationDate, long durationInMillis, Long dataUsage) {
             this.context = context;
             this.callerInfo = callerInfo;
             this.number = number;
@@ -65,7 +64,6 @@ final class CallLogManager extends CallsManagerListenerBase {
             this.timestamp = creationDate;
             this.durationInSec = (int)(durationInMillis / 1000);
             this.dataUsage = dataUsage;
-            this.callExtras = callExtras;
         }
         // Since the members are accessed directly, we don't use the
         // mXxxx notation.
@@ -79,7 +77,6 @@ final class CallLogManager extends CallsManagerListenerBase {
         public final long timestamp;
         public final int durationInSec;
         public final Long dataUsage;
-        public final Bundle callExtras;
     }
 
     private static final String TAG = CallLogManager.class.getSimpleName();
@@ -152,7 +149,7 @@ final class CallLogManager extends CallsManagerListenerBase {
         int callFeatures = getCallFeatures(call.getVideoStateHistory());
         logCall(call.getCallerInfo(), logNumber, call.getHandlePresentation(),
                 callLogType, callFeatures, accountHandle, creationTime, age, null,
-                call.isEmergencyCall(), call.getIntentExtras());
+                call.isEmergencyCall());
     }
 
     /**
@@ -167,7 +164,6 @@ final class CallLogManager extends CallsManagerListenerBase {
      * @param duration The duration of the call, in milliseconds.
      * @param dataUsage The data usage for the call, null if not applicable.
      * @param isEmergency {@code true} if this is an emergency call, {@code false} otherwise.
-     * @param callExtras if the call has extra data (eg: origin) it'll be here.
      */
     private void logCall(
             CallerInfo callerInfo,
@@ -179,8 +175,7 @@ final class CallLogManager extends CallsManagerListenerBase {
             long start,
             long duration,
             Long dataUsage,
-            boolean isEmergency,
-            Bundle callExtras) {
+            boolean isEmergency) {
 
         // On some devices, to avoid accidental redialing of emergency numbers, we *never* log
         // emergency calls to the Call Log.  (This behavior is set on a per-product basis, based
@@ -198,7 +193,7 @@ final class CallLogManager extends CallsManagerListenerBase {
                     + Log.pii(number) + "," + presentation + ", " + callType
                     + ", " + start + ", " + duration);
             AddCallArgs args = new AddCallArgs(mContext, callerInfo, number, presentation,
-                    callType, features, accountHandle, start, duration, dataUsage, callExtras);
+                    callType, features, accountHandle, start, duration, dataUsage);
             logCallAsync(args);
         } else {
           Log.d(TAG, "Not adding emergency call to call log.");
@@ -267,7 +262,7 @@ final class CallLogManager extends CallsManagerListenerBase {
                     // May block.
                     result[i] = Calls.addCall(c.callerInfo, c.context, c.number, c.presentation,
                             c.callType, c.features, c.accountHandle, c.timestamp, c.durationInSec,
-                            c.dataUsage, true /* addForAllUsers */, c.callExtras);
+                            c.dataUsage, true /* addForAllUsers */);
                 } catch (Exception e) {
                     // This is very rare but may happen in legitimate cases.
                     // E.g. If the phone is encrypted and thus write request fails, it may cause
