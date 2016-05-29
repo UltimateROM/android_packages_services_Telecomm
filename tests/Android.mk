@@ -21,8 +21,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := \
         android-ex-camera2 \
         android-support-v4 \
         guava \
-        mockito-target \
-        org.cyanogenmod.platform.sdk
+        mockito-target
 
 LOCAL_SRC_FILES := \
         $(call all-java-files-under, src) \
