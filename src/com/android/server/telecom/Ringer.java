@@ -18,7 +18,6 @@ package com.android.server.telecom;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -210,18 +209,6 @@ final class Ringer extends CallsManagerListenerBase {
                     Log.event(call, Log.Events.START_RINGER);
                     mState = STATE_RINGING;
                 }
-
-                float startVolume = 0;
-                int rampUpTime = 0;
-
-                final ContentResolver cr = mContext.getContentResolver();
-                if (Settings.System.getInt(cr, Settings.System.INCREASING_RING, 0) != 0) {
-                    startVolume = Settings.System.getFloat(cr,
-                            Settings.System.INCREASING_RING_START_VOLUME, 0.1f);
-                    rampUpTime = Settings.System.getInt(cr,
-                            Settings.System.INCREASING_RING_RAMP_UP_TIME, 20);
-                }
-
                 mCallAudioManager.setIsRinging(call, true);
 
                 // Because we wait until a contact info query to complete before processing a
@@ -239,7 +226,7 @@ final class Ringer extends CallsManagerListenerBase {
                 }
 
                 mRingtonePlayer.setPhoneId(phoneId);
-                mRingtonePlayer.play(foregroundCall.getRingtone(), startVolume, rampUpTime);
+                mRingtonePlayer.play(foregroundCall.getRingtone());
             } else {
                 Log.v(this, "startRingingOrCallWaiting, skipping because volume is 0");
             }
