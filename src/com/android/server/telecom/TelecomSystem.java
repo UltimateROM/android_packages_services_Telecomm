@@ -74,7 +74,6 @@ public final class TelecomSystem {
      * Blacklist call notifier. Exists here so that the instance can be shared with
      * {@link TelecomBroadcastReceiver}.
      */
-    private final BlacklistCallNotifier mBlacklistCallNotifier;
     private final ViceNotifier mViceNotifier;
 
     private final BroadcastReceiver mUserSwitchedReceiver = new BroadcastReceiver() {
@@ -114,7 +113,6 @@ public final class TelecomSystem {
         mViceNotifier = vicenotifier;
         mPhoneAccountRegistrar = new PhoneAccountRegistrar(mContext);
         mContactsAsyncHelper = new ContactsAsyncHelper(mLock);
-        mBlacklistCallNotifier = new BlacklistCallNotifier(mContext);
 
         mCallsManager = new CallsManager(
                 mContext,
@@ -126,7 +124,6 @@ public final class TelecomSystem {
                 headsetMediaButtonFactory,
                 proximitySensorManagerFactory,
                 inCallWakeLockControllerFactory,
-                mBlacklistCallNotifier,
                 mCallInfoProvider,
                 mViceNotifier);
 
