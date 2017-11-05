@@ -13,6 +13,7 @@ LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/proto/
 LOCAL_PROTO_JAVA_OUTPUT_PARAMS := optional_field_style=accessors
 
 LOCAL_PACKAGE_NAME := Telecom
+LOCAL_DEX_PREOPT := false
 
 LOCAL_CERTIFICATE := platform
 LOCAL_PRIVILEGED_MODULE := true
@@ -24,4 +25,4 @@ include frameworks/base/packages/SettingsLib/common.mk
 include $(BUILD_PACKAGE)
 
 # Build the test package.
-include $(call all-makefiles-under,$(LOCAL_PATH))
+#include $(call all-makefiles-under,$(LOCAL_PATH))
